@@ -6,7 +6,7 @@ add_ssh_keys() {
   for private_key in $private_keys; do
     public_key="$(cat ~/.ssh/$private_key.pub)"
     if [[ "$public_keys" != *"$public_key"* ]]; then
-      ssh-add "~/.ssh/$private_key"
+      ssh-add ~/.ssh/$private_key
     fi
   done
 }
