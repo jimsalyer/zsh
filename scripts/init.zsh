@@ -35,6 +35,21 @@ function init_sdk() {
   [[ -s "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh" ]] && source "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh"
 }
 
+function init_ssh() {
+  [[ -z "$SSH_AGENT_PID" ]] && eval $(ssh-agent -s)
+
+  private_keys=("$@")
+  public_keys=$(ssh-add -L)
+
+  # Add any SSH keys that haven't been added yet
+  for private_key in $private_keys; do
+    public_key="$(cat ~/.ssh/$private_key.pub)"
+    if [[ "$public_keys" != *"$public_key"* ]]; then
+      ssh-add ~/.ssh/$private_key
+    fi
+  done
+}
+
 function init_volta() {
   export VOLTA_HOME="$HOME/.volta"
   export PATH="$VOLTA_HOME/bin:$PATH"
