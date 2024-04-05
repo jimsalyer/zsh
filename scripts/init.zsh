@@ -1,10 +1,13 @@
 function init_brew() {
-  apple_silicon="${1:=false}"
-  if $apple_silicon; then
-    eval $(/opt/homebrew/bin/brew shellenv)
+  # If you're on an M# Mac, you need to set the APPLE_SILICON environment variable
+  if [[ -z "$APPLE_SILICON" ]]; then
+    export HOMEBREW_INSTALL_PATH=/usr/local/opt
+    export HOMEBREW_CLI_PATH=/usr/local/bin/brew
   else
-    eval $(/usr/local/bin/brew shellenv)
+    export HOMEBREW_INSTALL_PATH=/opt/homebrew/opt
+    export HOMEBREW_CLI_PATH=/opt/homebrew/bin/brew
   fi
+  eval $("$HOMEBREW_CLI_PATH" shellenv)
 }
 
 function init_dvnm() {
@@ -15,8 +18,8 @@ function init_dvnm() {
 
 function init_nvm() {
   export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"                                       # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
+  [ -s "$HOMEBREW_INSTALL_PATH/nvm/nvm.sh" ] && \. "$HOMEBREW_INSTALL_PATH/nvm/nvm.sh"                                       # This loads nvm
+  [ -s "$HOMEBREW_INSTALL_PATH/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_INSTALL_PATH/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 }
 
 function init_pyenv() {
@@ -31,8 +34,15 @@ function init_rbenv() {
 
 function init_sdk() {
   #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-  export SDKMAN_DIR="/opt/homebrew/opt/sdkman-cli/libexec"
-  [[ -s "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh" ]] && source "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh"
+  export SDKMAN_DIR="$HOMEBREW_INSTALL_PATH/sdkman-cli/libexec"
+  [[ -s "$HOMEBREW_INSTALL_PATH/sdkman-cli/libexec/bin/sdkman-init.sh" ]] && source "$HOMEBREW_INSTALL_PATH/sdkman-cli/libexec/bin/sdkman-init.sh"
+}
+
+function init_sqlite() {
+  export PATH="$HOMEBREW_INSTALL_PATH/sqlite/bin:$PATH"
+  export LDFLAGS="-L$HOMEBREW_INSTALL_PATH/sqlite/lib"
+  export CPPFLAGS="-I$HOMEBREW_INSTALL_PATH/sqlite/include"
+  # PKG_CONFIG_PATH="$HOMEBREW_INSTALL_PATH/sqlite/lib/pkgconfig"
 }
 
 function init_ssh() {
