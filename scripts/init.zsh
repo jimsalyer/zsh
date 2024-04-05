@@ -1,5 +1,5 @@
 function init_brew() {
-  $apple_silicon="$1"
+  apple_silicon="${1:=false}"
   if $apple_silicon; then
     eval $(/opt/homebrew/bin/brew shellenv)
   else
