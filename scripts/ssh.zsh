@@ -1,4 +1,6 @@
 add_ssh_keys() {
+  [[ -z "$SSH_AGENT_PID" ]] && eval $(ssh-agent -s)
+
   private_keys=("$@")
   public_keys=$(ssh-add -L)
 
