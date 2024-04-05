@@ -29,3 +29,8 @@ function init_sdk() {
   export SDKMAN_DIR="/opt/homebrew/opt/sdkman-cli/libexec"
   [[ -s "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh" ]] && source "/opt/homebrew/opt/sdkman-cli/libexec/bin/sdkman-init.sh"
 }
+
+function init_volta() {
+  export VOLTA_HOME="$HOME/.volta"
+  export PATH="$VOLTA_HOME/bin:$PATH"
+}
