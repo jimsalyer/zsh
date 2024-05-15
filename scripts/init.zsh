@@ -46,7 +46,26 @@ function init_sqlite() {
 }
 
 function init_ssh() {
-  [[ -z "$SSH_AGENT_PID" ]] && eval $(ssh-agent -s)
+    env=~/.ssh/agent.env
+
+  # Load environment file
+  [[ -f $env ]] && source $env >| /dev/null
+
+  # Get agent run state:
+  # 0 = agent running with keys
+  # 1 = agent running without keys
+  # 2 = agent not running
+  state=$(
+    ssh-add -l >| /dev/null 2>&1
+    echo $?
+  )
+
+  if [[ ! "$SSH_AUTH_SOCK" ]] || [[ "$state" == 2 ]]; then
+    # If the agent is not running, start it
+    umask 077
+    ssh-agent >| $env
+    source $env >| /dev/null
+  fi
 
   private_keys=("$@")
   public_keys=$(ssh-add -L)
@@ -54,7 +73,7 @@ function init_ssh() {
   # Add any SSH keys that haven't been added yet
   for private_key in $private_keys; do
     public_key="$(cat ~/.ssh/$private_key.pub)"
-    if [[ "$public_keys" != *"$public_key"* ]]; then
+    if [[ $public_keys != *$public_key* ]]; then
       ssh-add ~/.ssh/$private_key
     fi
   done
@@ -63,4 +82,21 @@ function init_ssh() {
 function init_volta() {
   export VOLTA_HOME="$HOME/.volta"
   export PATH="$VOLTA_HOME/bin:$PATH"
+}
+
+function init_zsh() {
+  # Lines configured by zsh-newuser-install
+  HISTFILE=~/.histfile
+  HISTSIZE=100
+  SAVEHIST=100
+  setopt autocd extendedglob nomatch
+  unsetopt beep notify
+  bindkey -e
+  # End of lines configured by zsh-newuser-install
+  # The following lines were added by compinstall
+  zstyle :compinstall filename '/c/Users/E36CTC/.zshrc'
+
+  autoload -Uz compinit
+  compinit
+  # End of lines added by compinstall
 }
