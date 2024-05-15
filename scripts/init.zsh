@@ -83,20 +83,3 @@ function init_volta() {
   export VOLTA_HOME="$HOME/.volta"
   export PATH="$VOLTA_HOME/bin:$PATH"
 }
-
-function init_zsh() {
-  # Lines configured by zsh-newuser-install
-  HISTFILE=~/.histfile
-  HISTSIZE=100
-  SAVEHIST=100
-  setopt autocd extendedglob nomatch
-  unsetopt beep notify
-  bindkey -e
-  # End of lines configured by zsh-newuser-install
-  # The following lines were added by compinstall
-  zstyle :compinstall filename '/c/Users/E36CTC/.zshrc'
-
-  autoload -Uz compinit
-  compinit
-  # End of lines added by compinstall
-}
