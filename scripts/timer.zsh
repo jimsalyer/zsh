@@ -1,9 +1,9 @@
-function start_timer() {
+start_timer() {
   timer=$(($(gdate +%s%0N) / 1000000))
   echo 'Timer started'
 }
 
-function stop_timer() {
+stop_timer() {
   if [ $timer ]; then
     now=$(($(gdate +%s%0N) / 1000000))
     elapsed=$(($now - $timer))
